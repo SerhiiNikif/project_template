@@ -19,16 +19,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: List files
-        run: ls -la ./dist && ls -la
-
-      - name: Generate .env file
-        run: |
-          echo "PORT=${{ secrets.PORT }}" >> .env
-
-      - name: List dist folder
-        run: ls -la ./dist
-
       - name: Deploy files
         uses: appleboy/scp-action@v0.1.0
         with:
