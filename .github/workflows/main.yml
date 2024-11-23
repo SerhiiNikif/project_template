@@ -17,3 +17,4 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         password: ${{ secrets.REMOTE_PASSWORD }}
         server-dir: ${{ secrets.REMOTE_PATH }}
+        protocol: sftp
