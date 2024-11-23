@@ -19,21 +19,11 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: List files
-        run: ls -la ./dist && ls -la
-
-      - name: Generate .env file
-        run: |
-          echo "PORT=${{ secrets.PORT }}" >> .env
-
-      - name: List dist folder
-        run: ls -la ./dist
-
-      - name: Clean remote directory
+      - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          debug: true
+          source: ./dist
