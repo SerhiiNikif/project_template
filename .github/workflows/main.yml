@@ -39,7 +39,7 @@ jobs:
           debug: true
 
       - name: Extract files on the server and install dependencies
-        uses: appleboy/ssh-action@v0.1.0
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.FTP_USER }}
