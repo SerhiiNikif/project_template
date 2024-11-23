@@ -53,10 +53,20 @@ jobs:
             ls -la deployment
             mv deployment/* . || { echo "Переміщення файлів не вдалося"; exit 1; }
             rm -rf deployment deployment.tar.gz
-            echo "Перевірка доступності Node.js:"
-            node --version || { echo "Node.js не встановлено"; exit 1; }
-            echo "Перевірка доступності npm:"
+
+            echo "Перевірка доступності Node.js..."
+            if ! command -v node &> /dev/null; then
+              echo "Node.js не встановлено. Встановлюю Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "Node.js вже встановлено:"
+              node --version
+            fi
+
+            echo "Перевірка доступності npm..."
             npm --version || { echo "npm не встановлено"; exit 1; }
+
             echo "Встановлюю залежності..."
             npm install --production || { echo "Встановлення залежностей не вдалося"; exit 1; }
   
