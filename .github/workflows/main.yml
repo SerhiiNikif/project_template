@@ -38,7 +38,7 @@ jobs:
           rm: true
           debug: true
 
-      - name: Extract files on the server
+      - name: Extract files on the server and install dependencies
         uses: appleboy/ssh-action@v0.1.0
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -50,3 +50,4 @@ jobs:
             tar -xzf deployment.tar.gz
             mv deployment/* .
             rm -rf deployment deployment.tar.gz
+            npm install --production # Встановлення залежностей
