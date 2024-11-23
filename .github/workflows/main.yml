@@ -10,19 +10,31 @@ jobs:
     name: FTP Deploy
     runs-on: ubuntu-latest
     steps:
-      # Крок 1: Клонування коду з репозиторію
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Крок 2: Встановлення залежностей локально
       - name: Install dependencies
         run: npm install
 
-      # Крок 3: Білд проекту
       - name: Build project
         run: npm run build
 
-      # Крок 4: Завантаження файлів на сервер
+      - name: List files for debugging
+        run: ls -la
+
+      - name: Archive files for upload
+        run: |
+          tar -czf build.tar.gz dist package.json
+
+      - name: Clean remote directory
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          script: |
+            rm -rf ${{ secrets.FTP_PATH }}/*
+
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
         with:
@@ -30,14 +42,19 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: |
-            ./dist/**
-            ./package.json
-            ./package-lock.json
-            ./.env # Якщо використовується .env-файл
-          rm: true # Видаляти старі файли перед завантаженням
+          source: build.tar.gz
 
-      # Крок 5: Встановлення залежностей на сервері
+      - name: Extract files on server
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          script: |
+            cd ${{ secrets.FTP_PATH }}
+            tar -xzf build.tar.gz
+            rm build.tar.gz
+
       - name: Install dependencies on server
         run: |
           ssh ${{ secrets.FTP_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
