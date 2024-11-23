@@ -47,7 +47,16 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.FTP_PATH }}
-            tar -xzf deployment.tar.gz
-            mv deployment/* .
+            echo "Розпаковую архів..."
+            tar -xzf deployment.tar.gz || { echo "Розпакування не вдалося"; exit 1; }
+            echo "Файли після розпакування:"
+            ls -la deployment
+            mv deployment/* . || { echo "Переміщення файлів не вдалося"; exit 1; }
             rm -rf deployment deployment.tar.gz
-            npm install --production # Встановлення залежностей
+            echo "Перевірка доступності Node.js:"
+            node --version || { echo "Node.js не встановлено"; exit 1; }
+            echo "Перевірка доступності npm:"
+            npm --version || { echo "npm не встановлено"; exit 1; }
+            echo "Встановлюю залежності..."
+            npm install --production || { echo "Встановлення залежностей не вдалося"; exit 1; }
+  
