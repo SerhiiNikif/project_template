@@ -19,6 +19,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: List files
+        run: ls -la ./dist && ls -la
+
       - name: Generate .env file
         run: |
           echo "PORT=${{ secrets.PORT }}" >> .env
@@ -45,7 +48,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
           source: |
-            dist/**
+            ./dist/**
             package.json
             package-lock.json
             .env
