@@ -38,5 +38,15 @@ jobs:
           rm: true
           debug: true
 
-      - name: Cleanup archive
-        run: rm -rf deployment deployment.tar.gz
+      - name: Extract files on the server
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 22
+          script: |
+            cd ${{ secrets.FTP_PATH }}
+            tar -xzf deployment.tar.gz
+            mv deployment/* .
+            rm -rf deployment deployment.tar.gz
