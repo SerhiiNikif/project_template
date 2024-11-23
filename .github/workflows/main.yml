@@ -56,16 +56,22 @@ jobs:
 
             echo "Перевірка доступності Node.js..."
             if ! command -v node &> /dev/null; then
-              echo "Node.js не встановлено. Встановлюю Node.js..."
-              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              sudo apt-get install -y nodejs
+              echo "Node.js не встановлено. Завантаження та встановлення Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Помилка встановлення Node.js"; exit 1; }
+              apt-get install -y nodejs || { echo "Помилка встановлення nodejs"; exit 1; }
             else
               echo "Node.js вже встановлено:"
               node --version
             fi
 
             echo "Перевірка доступності npm..."
-            npm --version || { echo "npm не встановлено"; exit 1; }
+            if ! command -v npm &> /dev/null; then
+              echo "npm не встановлено. Спроба встановити..."
+              apt-get install -y npm || { echo "Помилка встановлення npm"; exit 1; }
+            else
+              echo "npm вже встановлено:"
+              npm --version
+            fi
 
             echo "Встановлюю залежності..."
             npm install --production || { echo "Встановлення залежностей не вдалося"; exit 1; }
