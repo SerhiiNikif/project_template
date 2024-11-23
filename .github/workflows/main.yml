@@ -26,5 +26,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: |
-            ${{ github.workspace }}/package.json
+          source: ./package.json
