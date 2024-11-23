@@ -19,6 +19,11 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Generate .env file
+        run: |
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
+
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
         with:
@@ -26,5 +31,8 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: ./dist/
-          rm: true
+          source: |
+            dist/**
+            package.json
+            package-lock.json
+            .env
