@@ -19,8 +19,8 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: List dist files
-        run: ls -la ${{ github.workspace }}/dist
+      - name: Archive files
+        run: tar -czvf build.tar.gz ./dist ./package.json ./package-lock.json
 
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
@@ -29,7 +29,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: |
-            ${{ github.workspace }}/dist/**
-            ${{ github.workspace }}/package.json
-            ${{ github.workspace }}/package-lock.json
+          source: ./build.tar.gz
