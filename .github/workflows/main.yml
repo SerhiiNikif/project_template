@@ -19,6 +19,10 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Archive files for upload
+        run: |
+          tar -czf build.tar.gz dist package.json
+
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
         with:
@@ -26,4 +30,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: ./package.json
+          source: ./build.tar.gz
