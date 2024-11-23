@@ -24,8 +24,8 @@ jobs:
           echo "PORT=${{ secrets.PORT }}" >> .env
           echo "HOST=${{ secrets.HOST }}" >> .env
 
-      - name: List files for debugging
-        run: ls -la ./dist && ls -la
+      - name: List dist folder
+        run: ls -la ./dist
 
       - name: Clean remote directory
         uses: appleboy/scp-action@v0.1.0
@@ -35,6 +35,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
           rm: true
+          debug: true
 
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
@@ -48,3 +49,4 @@ jobs:
             package.json
             package-lock.json
             .env
+          debug: true
