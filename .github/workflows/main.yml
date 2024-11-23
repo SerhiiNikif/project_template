@@ -19,9 +19,21 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: List files for debugging
+        run: ls -la
+
       - name: Archive files for upload
         run: |
           tar -czf build.tar.gz dist package.json
+
+      - name: Clean remote directory
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          script: |
+            rm -rf ${{ secrets.FTP_PATH }}/*
 
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
@@ -30,4 +42,15 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: ./build.tar.gz
+          source: build.tar.gz
+
+      - name: Extract files on server
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          script: |
+            cd ${{ secrets.FTP_PATH }}
+            tar -xzf build.tar.gz
+            rm build.tar.gz
