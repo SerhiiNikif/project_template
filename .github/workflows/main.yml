@@ -1,19 +1,23 @@
-name: FTP deploy on push
+name: Deploy via FTP
+
 on:
   push:
     branches:
-    - main
+      - main
+
 jobs:
-  web-deploy:
-    name: Deploy
+  ftp-deploy:
+    name: FTP Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Get latest code
-      uses: actions/checkout@v4
-    - name: Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.REMOTE_USER }}
-        password: ${{ secrets.REMOTE_KEY }}
-        server-dir: ${{ secrets.REMOTE_PATH }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          protocol: ftp
+          server: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          password: ${{ secrets.REMOTE_PASSWORD }}
+          server-dir: ${{ secrets.REMOTE_PATH }}
