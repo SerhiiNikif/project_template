@@ -26,4 +26,8 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           target: ${{ secrets.FTP_PATH }}
-          source: ./dist/** ./package.json ./package-lock.json
+          source: |
+            ./dist/**
+            ./package.json
+            ./package-lock.json
+          strip_components: 0
