@@ -15,6 +15,5 @@ jobs:
       with:
         server: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
-        password: ${{ secrets.REMOTE_KEY }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
         server-dir: ${{ secrets.REMOTE_PATH }}
-        protocol: ftps
