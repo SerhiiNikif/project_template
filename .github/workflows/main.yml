@@ -56,9 +56,16 @@ jobs:
 
             echo "Перевірка доступності Node.js..."
             if ! command -v node &> /dev/null; then
-              echo "Node.js не встановлено. Завантаження та встановлення Node.js..."
-              curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Помилка встановлення Node.js"; exit 1; }
-              apt-get install -y nodejs || { echo "Помилка встановлення nodejs"; exit 1; }
+              echo "Node.js не встановлено. Спроба встановлення..."
+              if [ -f /etc/debian_version ]; then
+                curl -fsSL https://deb.nodesource.com/setup_18.x | bash - || { echo "Помилка встановлення Node.js"; exit 1; }
+                apt-get install -y nodejs || { echo "Помилка встановлення nodejs"; exit 1; }
+              elif [ -f /etc/redhat-release ]; then
+                curl -fsSL https://rpm.nodesource.com/setup_18.x | bash - || { echo "Помилка встановлення Node.js"; exit 1; }
+                yum install -y nodejs || { echo "Помилка встановлення nodejs"; exit 1; }
+              else
+                echo "Невідома операційна система. Встановіть Node.js вручну."; exit 1;
+              fi
             else
               echo "Node.js вже встановлено:"
               node --version
@@ -67,7 +74,13 @@ jobs:
             echo "Перевірка доступності npm..."
             if ! command -v npm &> /dev/null; then
               echo "npm не встановлено. Спроба встановити..."
-              apt-get install -y npm || { echo "Помилка встановлення npm"; exit 1; }
+              if [ -f /etc/debian_version ]; then
+                apt-get install -y npm || { echo "Помилка встановлення npm"; exit 1; }
+              elif [ -f /etc/redhat-release ]; then
+                yum install -y npm || { echo "Помилка встановлення npm"; exit 1; }
+              else
+                echo "Невідома операційна система. Встановіть npm вручну."; exit 1;
+              fi
             else
               echo "npm вже встановлено:"
               npm --version
@@ -75,4 +88,3 @@ jobs:
 
             echo "Встановлюю залежності..."
             npm install --production || { echo "Встановлення залежностей не вдалося"; exit 1; }
-  
