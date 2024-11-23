@@ -16,7 +16,8 @@ jobs:
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0
         with:
-          server: ${{ secrets.REMOTE_HOST }}
+          host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_PATH }}
+          target: ${{ secrets.FTP_PATH }}
+          source: ./
