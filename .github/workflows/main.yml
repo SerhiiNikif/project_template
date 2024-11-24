@@ -47,7 +47,6 @@ jobs:
           target: ${{ secrets.FTP_PATH }}
           source: build.tar.gz
 
-      # Налаштування Node.js, встановлення залежностей і запуск
       - name: Extract files and setup Node.js
         uses: appleboy/ssh-action@v0.1.1
         with:
@@ -63,10 +62,6 @@ jobs:
             tar -xzf build.tar.gz || { echo "Failed to extract archive"; exit 1; }
             rm build.tar.gz
 
-            # Оновлення середовища для Node.js
-            echo "Updating Node.js environment..."
-            source ~/.bashrc || echo "No .bashrc to source"
-
             # Перевірка наявності Node.js
             if ! command -v node &> /dev/null; then
               echo "Node.js is not installed! Please check your hosting environment."
@@ -81,11 +76,13 @@ jobs:
               exit 1
             fi
 
-            # Налаштування змінних середовища
+            # Налаштування змінних середовища безпосередньо
             echo "Exporting environment variables..."
-            echo "export NODE_ENV=production" >> ~/.bashrc
-            echo "export DB_NAME=${{ secrets.APP_NAME }}" >> ~/.bashrc
-            source ~/.bashrc
+            export NODE_ENV=production
+            export APP_NAME=${{ secrets.APP_NAME }}
+            export DB_NAME=${{ secrets.DB_NAME }}
+            export APP_PORT=${{ secrets.APP_PORT }}
+            export APP_URL=${{ secrets.APP_URL }}
 
             # Перевірка та завершення лише потрібного процесу
             echo "Checking for running application..."

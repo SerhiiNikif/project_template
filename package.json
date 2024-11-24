@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node -r module-alias/register dist/main.js --APP_NAME=My App",
+    "start": "node -r module-alias/register dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node -r module-alias/register dist/main.js",
