@@ -81,11 +81,17 @@ jobs:
               exit 1
             fi
       
-            # Зупинка поточного процесу (якщо використовується стандартний сервер)
-            echo "Stopping current application process..."
-            pkill -f "node dist/main.js" || echo "No running process found to stop."
+            # Перевірка та завершення лише потрібного процесу
+            echo "Checking for running application..."
+            CURRENT_PID=$(pgrep -f "node dist/main.js")
+            if [ -n "$CURRENT_PID" ]; then
+              echo "Stopping current application process with PID: $CURRENT_PID"
+              kill "$CURRENT_PID" || echo "Failed to stop process with PID: $CURRENT_PID"
+            else
+              echo "No running process found."
+            fi
 
             # Запуск програми з змінними середовища
             echo "Starting application with environment variables..."
-            NODE_ENV=production DB_NAME=${{ secrets.DB_NAME }} nohup node dist/main.js > app.log 2>&1 &
+            nohup NODE_ENV=production DB_NAME=${{ secrets.DB_NAME }} node dist/main.js > app.log 2>&1 &
             echo "Application started successfully."
