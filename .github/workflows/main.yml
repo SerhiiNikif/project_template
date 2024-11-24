@@ -81,15 +81,6 @@ jobs:
               exit 1
             fi
       
-            # Експортування змінних середовища
-            echo "Setting environment variables..."
-            export NODE_ENV=production
-            export DB_NAME=${{ secrets.DB_NAME }}
-      
-            # (За потреби) Перезапуск через PM2
-            if command -v pm2 &> /dev/null; then
-              echo "Restarting application via PM2..."
-              pm2 restart all || echo "PM2 restart failed!"
-            else
-              echo "PM2 is not installed or not configured. Skipping PM2 restart."
-            fi
+            # Запуск програми з змінними середовища
+            echo "Starting application with environment variables..."
+            NODE_ENV=production DB_NAME=${{ secrets.DB_NAME }} npm run start
