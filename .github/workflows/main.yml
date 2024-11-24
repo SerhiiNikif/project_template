@@ -81,6 +81,12 @@ jobs:
               exit 1
             fi
       
+            # Налаштування змінних середовища
+            echo "Exporting environment variables..."
+            echo "export NODE_ENV=production" >> ~/.bashrc
+            echo "export DB_NAME=${{ secrets.DB_NAME }}" >> ~/.bashrc
+            source ~/.bashrc
+
             # Перевірка та завершення лише потрібного процесу
             echo "Checking for running application..."
             CURRENT_PID=$(pgrep -f "node dist/main.js")
@@ -93,5 +99,5 @@ jobs:
 
             # Запуск програми з змінними середовища
             echo "Starting application with environment variables..."
-            nohup NODE_ENV=production DB_NAME=${{ secrets.DB_NAME }} node dist/main.js > app.log 2>&1 &
+            nohup node dist/main.js > app.log 2>&1 &
             echo "Application started successfully."
