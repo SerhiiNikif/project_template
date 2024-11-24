@@ -76,17 +76,6 @@ jobs:
               exit 1
             fi
 
-            # Додавання змінних середовища до глобального середовища (через ~/.bashrc)
-            echo "Exporting environment variables globally..."
-            {
-              echo "export NODE_ENV=production"
-              echo "export APP_NAME=${{ secrets.APP_NAME }}"
-              echo "export DB_NAME=${{ secrets.DB_NAME }}"
-              echo "export APP_PORT=${{ secrets.APP_PORT }}"
-              echo "export APP_URL=${{ secrets.APP_URL }}"
-            } >> ~/.bashrc
-            source ~/.bashrc
-
             # Перевірка та завершення лише потрібного процесу
             echo "Checking for running application..."
             CURRENT_PID=$(pgrep -f "node dist/main.js")
@@ -97,7 +86,7 @@ jobs:
               echo "No running process found."
             fi
 
-            # Запуск програми з змінними середовища
-            echo "Starting application with environment variables..."
-            nohup env NODE_ENV=production APP_NAME=${{ secrets.APP_NAME }} DB_NAME=${{ secrets.DB_NAME }} APP_PORT=${{ secrets.APP_PORT }} APP_URL=${{ secrets.APP_URL }} node dist/main.js > app.log 2>&1 &
+            # Запуск програми з використанням .env.production
+            echo "Starting application using .env.production..."
+            nohup node dist/main.js > app.log 2>&1 &
             echo "Application started successfully."

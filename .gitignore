@@ -28,6 +28,7 @@
 !.vscode/extensions.json
 package-lock.json
 .env
+.env.production
 ########
 
 

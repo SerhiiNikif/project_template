@@ -21,6 +21,10 @@ export class AppConfigService {
     return Number(this.configService.get<number>('app.port') ?? 3000);
   }
 
+  get host(): string {
+    return this.configService.get<string>('app.host') || '127.0.0.1';
+  }
+
   get isProduction(): boolean {
     return this.env === 'production';
   }
