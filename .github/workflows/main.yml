@@ -86,13 +86,6 @@ jobs:
             export NODE_ENV=production
             export DB_NAME=${{ secrets.DB_NAME }}
       
-            # Запуск програми
-            echo "Starting application..."
-            if ! npm run start; then
-              echo "Application start failed!"
-              exit 1
-            fi
-      
             # (За потреби) Перезапуск через PM2
             if command -v pm2 &> /dev/null; then
               echo "Restarting application via PM2..."
