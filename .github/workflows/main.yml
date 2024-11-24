@@ -81,28 +81,6 @@ jobs:
               exit 1
             fi
 
-            # Налаштування змінних середовища
-            echo "Exporting environment variables..."
-            echo "export NODE_ENV=${{ secrets.APP_ENV }}" >> ~/.bashrc
-            echo "export APP_NAME=${{ secrets.APP_NAME }}" >> ~/.bashrc
-            echo "export APP_PORT=${{ secrets.APP_PORT }}" >> ~/.bashrc
-            echo "export APP_URL=${{ secrets.APP_URL }}" >> ~/.bashrc
-            echo "export BACKEND_URL=${{ secrets.BACKEND_URL }}" >> ~/.bashrc
-            echo "export CLIENT_URL=${{ secrets.CLIENT_URL }}" >> ~/.bashrc
-            echo "export DB_DIALECT=${{ secrets.DB_DIALECT }}" >> ~/.bashrc
-            echo "export DB_HOST=${{ secrets.DB_HOST }}" >> ~/.bashrc
-            echo "export DB_NAME=${{ secrets.DB_NAME }}" >> ~/.bashrc
-            echo "export DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ~/.bashrc
-            echo "export DB_PORT=${{ secrets.DB_PORT }}" >> ~/.bashrc
-            echo "export DB_USER=${{ secrets.DB_USER }}" >> ~/.bashrc
-            echo "export GOOGLE_API_PASSWORD=${{ secrets.GOOGLE_API_PASSWORD }}" >> ~/.bashrc
-            echo "export JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}" >> ~/.bashrc
-            echo "export JWT_SECRET=${{ secrets.JWT_SECRET }}" >> ~/.bashrc
-            echo "export SMTP_HOST=${{ secrets.SMTP_HOST }}" >> ~/.bashrc
-            echo "export SMTP_PORT=${{ secrets.SMTP_PORT }}" >> ~/.bashrc
-            echo "export SMTP_USER=${{ secrets.SMTP_USER }}" >> ~/.bashrc
-            source ~/.bashrc
-
             # Перевірка та завершення лише потрібного процесу
             echo "Checking for running application..."
             CURRENT_PID=$(pgrep -f "node dist/main.js")
@@ -113,6 +91,26 @@ jobs:
               echo "No running process found."
             fi
 
+            # Запуск програми з передачою змінних середовища
             echo "Starting application with environment variables..."
-            nohup NODE_ENV=${{ secrets.APP_ENV }} APP_NAME=${{ secrets.APP_NAME }} DB_NAME=${{ secrets.DB_NAME }} node dist/main.js > app.log 2>&1 &
+            nohup \
+              NODE_ENV=${{ secrets.APP_ENV }} \
+              APP_NAME=${{ secrets.APP_NAME }} \
+              APP_PORT=${{ secrets.APP_PORT }} \
+              APP_URL=${{ secrets.APP_URL }} \
+              BACKEND_URL=${{ secrets.BACKEND_URL }} \
+              CLIENT_URL=${{ secrets.CLIENT_URL }} \
+              DB_DIALECT=${{ secrets.DB_DIALECT }} \
+              DB_HOST=${{ secrets.DB_HOST }} \
+              DB_NAME=${{ secrets.DB_NAME }} \
+              DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              DB_PORT=${{ secrets.DB_PORT }} \
+              DB_USER=${{ secrets.DB_USER }} \
+              GOOGLE_API_PASSWORD=${{ secrets.GOOGLE_API_PASSWORD }} \
+              JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }} \
+              JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              SMTP_HOST=${{ secrets.SMTP_HOST }} \
+              SMTP_PORT=${{ secrets.SMTP_PORT }} \
+              SMTP_USER=${{ secrets.SMTP_USER }} \
+              node dist/main.js > app.log 2>&1 &
             echo "Application started successfully."
