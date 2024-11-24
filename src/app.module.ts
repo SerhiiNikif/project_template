@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Дозволяє використовувати змінні середовища глобально
+    }),
+  ],
   controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}

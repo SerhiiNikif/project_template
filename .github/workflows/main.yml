@@ -55,24 +55,48 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           script: |
-            # Перехід до папки з проектом
+            # Перехід до папки з проєктом
             cd ${{ secrets.FTP_PATH }}
-
+      
             # Розпакування архіву
-            tar -xzf build.tar.gz
+            echo "Extracting deployment package..."
+            tar -xzf build.tar.gz || { echo "Failed to extract archive"; exit 1; }
             rm build.tar.gz
-
+      
             # Оновлення середовища для Node.js
             echo "Updating Node.js environment..."
-            source ~/.bashrc || echo "No need to source .bashrc"
-
-            # Перевірка Node.js
-            node -v || echo "Node.js is not installed"
-
+            source ~/.bashrc || echo "No .bashrc to source"
+      
+            # Перевірка наявності Node.js
+            if ! command -v node &> /dev/null; then
+              echo "Node.js is not installed! Please check your hosting environment."
+              exit 1
+            fi
+            echo "Node.js version: $(node -v)"
+      
             # Встановлення залежностей
             echo "Installing dependencies..."
-            npm install --production || echo "Dependency installation failed"
-
-            # Перезапуск програми через Supervisor або PM2 (за потреби)
-            echo "Restarting application..."
-            pm2 restart all || echo "PM2 not found or not configured"
+            if ! npm install --production; then
+              echo "Dependency installation failed!"
+              exit 1
+            fi
+      
+            # Експортування змінних середовища
+            echo "Setting environment variables..."
+            export NODE_ENV=production
+            export DB_NAME=${{ secrets.DB_NAME }}
+      
+            # Запуск програми
+            echo "Starting application..."
+            if ! npm run start; then
+              echo "Application start failed!"
+              exit 1
+            fi
+      
+            # (За потреби) Перезапуск через PM2
+            if command -v pm2 &> /dev/null; then
+              echo "Restarting application via PM2..."
+              pm2 restart all || echo "PM2 restart failed!"
+            else
+              echo "PM2 is not installed or not configured. Skipping PM2 restart."
+            fi
