@@ -37,6 +37,26 @@ jobs:
           script: |
             rm -rf ${{ secrets.FTP_PATH }}/*
 
+      - name: Create .env.production on server
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          script: |
+            echo "Creating .env.production on server..."
+            cat <<EOF > .env.production
+            APP_NAME=${{ secrets.APP_NAME }}
+            APP_ENV=production
+            APP_PORT=${{ secrets.APP_PORT }}
+            APP_HOST=${{ secrets.APP_HOST }}
+            APP_URL=${{ secrets.APP_URL }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASS=${{ secrets.DB_PASS }}
+            EOF
+            echo ".env.production created successfully."
+
       # Завантаження файлів на сервер
       - name: Deploy via SFTP
         uses: appleboy/scp-action@v0.1.0

@@ -22,7 +22,6 @@
   },
   "include": [
     "src/**/*.ts",
-    ".env.production",
     "src/database/migrations/**/*.ts",
     "src/database/seeders/**/*.ts"
   ],
