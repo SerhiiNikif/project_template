@@ -81,17 +81,11 @@ jobs:
               exit 1
             fi
       
-            echo "Checking PM2 installation..."
-            if ! command -v pm2 &> /dev/null; then
-              echo "PM2 is not installed. Installing PM2..."
-              npm install -g pm2 || { echo "Failed to install PM2"; exit 1; }
-            fi
+            # Зупинка поточного процесу (якщо використовується стандартний сервер)
+            echo "Stopping current application process..."
+            pkill -f "node dist/main.js" || echo "No running process found to stop."
 
-            echo "Setting environment variables..."
-            export NODE_ENV=production
-            export DB_NAME=${{ secrets.DB_NAME }}
-
-            echo "Starting application via PM2..."
-            pm2 delete all || echo "No PM2 processes to delete"
-            pm2 start dist/main.js --name "project_template" || { echo "Failed to start application via PM2"; exit 1; }
-            pm2 save || echo "Failed to save PM2 state"
+            # Запуск програми з змінними середовища
+            echo "Starting application with environment variables..."
+            NODE_ENV=production DB_NAME=${{ secrets.DB_NAME }} nohup node dist/main.js > app.log 2>&1 &
+            echo "Application started successfully."
