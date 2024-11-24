@@ -1,14 +1,29 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "moduleResolution": "node",
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false,
-    "target": "es6",
-    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
-  }
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "typeRoots": ["node_modules/@types", "src/@types"],
+    "types": ["node", "express"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/database/migrations/**/*.ts",
+    "src/database/seeders/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

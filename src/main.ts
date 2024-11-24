@@ -1,14 +1,22 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { config } from 'dotenv';
-config();
+import cookieParser from 'cookie-parser';
+import { AppConfigService } from './config/app/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const appConfig: AppConfigService = app.get(AppConfigService);
 
-  const port = process.env.PORT || 3000;
+  app.use(cookieParser());
 
-  await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}`);
+  app.enableCors({
+    origin: appConfig.isProduction
+      ? 'https://my-production-domain.com'
+      : '*', // Allow all in development
+  });
+
+  await app.listen(appConfig.port);
+  console.log(`Application is running on: ${appConfig.url}:${appConfig.port}`);
 }
-bootstrap(); 
+
+bootstrap();
