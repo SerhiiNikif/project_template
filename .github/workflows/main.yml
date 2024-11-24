@@ -81,16 +81,17 @@ jobs:
               exit 1
             fi
       
+            echo "Checking PM2 installation..."
+            if ! command -v pm2 &> /dev/null; then
+              echo "PM2 is not installed. Installing PM2..."
+              npm install -g pm2 || { echo "Failed to install PM2"; exit 1; }
+            fi
+
             echo "Setting environment variables..."
             export NODE_ENV=production
             export DB_NAME=${{ secrets.DB_NAME }}
 
             echo "Starting application via PM2..."
-            if command -v pm2 &> /dev/null; then
-              pm2 delete all || echo "No PM2 processes to delete"
-              pm2 start dist/main.js --name "project_template" || echo "Failed to start application via PM2"
-              pm2 save || echo "Failed to save PM2 state"
-            else
-              echo "PM2 is not installed. Please install PM2 or configure it manually."
-              exit 1
-            fi
+            pm2 delete all || echo "No PM2 processes to delete"
+            pm2 start dist/main.js --name "project_template" || { echo "Failed to start application via PM2"; exit 1; }
+            pm2 save || echo "Failed to save PM2 state"
