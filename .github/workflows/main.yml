@@ -76,13 +76,16 @@ jobs:
               exit 1
             fi
 
-            # Налаштування змінних середовища безпосередньо
-            echo "Exporting environment variables..."
-            export NODE_ENV=production
-            export APP_NAME=${{ secrets.APP_NAME }}
-            export DB_NAME=${{ secrets.DB_NAME }}
-            export APP_PORT=${{ secrets.APP_PORT }}
-            export APP_URL=${{ secrets.APP_URL }}
+            # Додавання змінних середовища до глобального середовища (через ~/.bashrc)
+            echo "Exporting environment variables globally..."
+            {
+              echo "export NODE_ENV=production"
+              echo "export APP_NAME=${{ secrets.APP_NAME }}"
+              echo "export DB_NAME=${{ secrets.DB_NAME }}"
+              echo "export APP_PORT=${{ secrets.APP_PORT }}"
+              echo "export APP_URL=${{ secrets.APP_URL }}"
+            } >> ~/.bashrc
+            source ~/.bashrc
 
             # Перевірка та завершення лише потрібного процесу
             echo "Checking for running application..."
@@ -96,5 +99,5 @@ jobs:
 
             # Запуск програми з змінними середовища
             echo "Starting application with environment variables..."
-            nohup node dist/main.js > app.log 2>&1 &
+            nohup env NODE_ENV=production APP_NAME=${{ secrets.APP_NAME }} DB_NAME=${{ secrets.DB_NAME }} APP_PORT=${{ secrets.APP_PORT }} APP_URL=${{ secrets.APP_URL }} node dist/main.js > app.log 2>&1 &
             echo "Application started successfully."
