@@ -5,7 +5,7 @@
     "@": "./dist"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && copyfiles .env.production dist",
     "start": "node -r module-alias/register dist/main.js",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
